@@ -1,0 +1,14 @@
+{
+    "configurations": [
+        {
+            "type": "java",
+            "name": "Spring Boot-DemoApplication<rvcs>",
+            "request": "launch",
+            "cwd": "${workspaceFolder}",
+            "console": "internalConsole",
+            "mainClass": "com.narthil.rvcs.DemoApplication",
+            "projectName": "rvcs",
+            "args": ""
+        }
+    ]
+}
