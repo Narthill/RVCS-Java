@@ -5,10 +5,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.narthil.rvcs.dao.UserRepository;
+import com.narthil.rvcs.dao.user.UserDao;
+import com.narthil.rvcs.dao.user.impl.UserRepository;
 import com.narthil.rvcs.pojo.UserInfo;
 import com.narthil.rvcs.dto.ResultInfo;
-import com.narthil.rvcs.dto.StatusInfo;
 import com.narthil.rvcs.security.JwtTokenUtil;
 // import com.narthil.rvcs.security.JwtUser;
 import com.narthil.rvcs.service.UserService;
@@ -30,6 +30,8 @@ import org.springframework.stereotype.Service;
 @Service
 public class UserServiceImpl implements UserService {
 
+    @Autowired
+    private UserDao userDao;
     @Autowired
     private UserRepository userRepository;
     private AuthenticationManager authenticationManager;
@@ -60,11 +62,12 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public boolean register(UserInfo user){
+    public ResultInfo<Object> register(UserInfo user){
+        ResultInfo<Object> userResult=new ResultInfo<Object>();
         try {
             final String username = user.getUsername();
             if (userRepository.findByUsername(username) != null) {
-                return false;
+                userResult.setStatus(0,"重名");
             }else{
                 BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
                 final String rawPassword = user.getPassword();
@@ -73,10 +76,13 @@ public class UserServiceImpl implements UserService {
                 roles.add("USER");
                 user.setRoles(roles);
                 userRepository.insert(user);
-                return true;
+
+                userResult.setStatus(1,"注册成功");
             }
+            return userResult;
         } catch (Exception e) {
-            return false;
+            userResult.setStatus(0,"位置错误");
+            return userResult;
         }
 
     }
@@ -95,25 +101,45 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public ResultInfo<Map<String,Object>> getUserInfoNotPwd(String username) {
-        UserInfo user = userRepository.findByUsername(username);
-        Map<String,Object> dataMap=new HashMap<String,Object>();
+        UserInfo userTemp = userRepository.findByUsername(username);
         ResultInfo<Map<String,Object>> userResult=new ResultInfo<Map<String,Object>>();
-        StatusInfo status=new StatusInfo();
-        if(user!=null){
-            dataMap.put("id", user.getId());
-            dataMap.put("username", user.getUsername());
-            dataMap.put("email", user.getEmail());
-            dataMap.put("name", user.getName());
+        if(userTemp!=null){
+            Map<String,Object> dataMap=new HashMap<String,Object>(){
+                {
+                    put("id", userTemp.getId());
+                    put("username", userTemp.getUsername());
+                    put("email", userTemp.getEmail());
+                    put("name", userTemp.getName());
+                }
+            };
             userResult.setData(dataMap);
-            status.setStatus(1);
+            userResult.setStatus(1,"请求成功");
         }else{
-            status.setStatus(0);
+            userResult.setStatus(0,"没有找到用户信息");
         }
-        userResult.setStatus(status);
         return userResult;
     }
 
-    public StatusInfo updateUserInfo(UserInfo user){
-        return null;
+    @Override
+    public ResultInfo<Map<String,Object>> updateUserInfo(UserInfo user){
+        ResultInfo<Map<String,Object>> userResult=new ResultInfo<Map<String,Object>>();
+        UserInfo userTemp = userDao.updateUserInfo(user);
+        if (userTemp!=null) {
+            System.out.println(user);
+            System.out.println(userTemp);
+            Map<String,Object> dataMap=new HashMap<String,Object>(){
+                {
+                    put("id", userTemp.getId());
+                    put("username", userTemp.getUsername());
+                    put("email", userTemp.getEmail());
+                    put("name", userTemp.getName());
+                }
+            };
+            userResult.setData(dataMap);
+            userResult.setStatus(1,"修改成功");
+        }else{
+            userResult.setStatus(0,"修改失败");
+        }
+        return userResult;
     }
 }

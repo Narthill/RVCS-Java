@@ -12,8 +12,9 @@ import lombok.Data;
  * UserInfo
  */
 
-@Document(collection = "UserInfo")
+
 @Data
+@Document(collection = "UserInfo")
 @ApiModel(value="UserInfo", description = "用户所有信息json描述")
 public class UserInfo {
     @Id

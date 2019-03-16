@@ -19,6 +19,8 @@ public class OrgInfo {
     private String name;
     private String desc;
     private boolean root;
+    private String rootname;
     private String parent;
     private List<String> children;
+    private List<String> member;
 }

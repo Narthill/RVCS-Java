@@ -1,4 +1,4 @@
-package com.narthil.rvcs.dao;
+package com.narthil.rvcs.dao.user.impl;
 import com.narthil.rvcs.pojo.UserInfo;
 
 import org.springframework.data.mongodb.repository.MongoRepository;
