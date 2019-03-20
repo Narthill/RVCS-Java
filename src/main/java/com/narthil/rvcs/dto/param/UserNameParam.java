@@ -5,8 +5,8 @@ import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
 @Data
-@ApiModel(value="UserInfoParam", description = "查找用户信息时的输入数据")
-public class UserInfoParam {
+@ApiModel(value="UserNameParam", description = "用户名输入数据")
+public class UserNameParam{
 
     @ApiModelProperty(value="用户名", required = true)
     private String username;

@@ -1,9 +1,9 @@
 package com.narthil.rvcs.controller;
 
 import com.narthil.rvcs.pojo.UserInfo;
-import com.narthil.rvcs.dto.param.UserInfoParam;
 import com.narthil.rvcs.dto.param.UserLoginParam;
 import com.narthil.rvcs.dto.param.UserModifyParam;
+import com.narthil.rvcs.dto.param.UserNameParam;
 import com.narthil.rvcs.dto.param.UserRegisterParam;
 
 import java.util.Map;
@@ -35,14 +35,14 @@ public class UserController {
      * @return 操作结果
      * @throws AuthenticationException 错误信息
      */
-    @ApiOperation(value = "获取用户信息", notes = "登录用户通过用户名获取用户信息")
+    @ApiOperation(value = "获取用户信息", notes = "通过用户名获取用户信息")
     @ApiImplicitParams({
-            @ApiImplicitParam(name = "user", value = "用户姓名", required = true, paramType = "body", dataType = "UserInfoParam"),
+            @ApiImplicitParam(name = "user", value = "用户名", required = true, paramType = "body", dataType = "UserNameParam"),
             @ApiImplicitParam(name = "Authorization", value = "用户token", required = true, paramType = "header", defaultValue = "Bearer +对应token") })
-    @PostMapping(value = "/getUserInfo", produces = "application/json")
-    public ResultInfo<Map<String, Object>> getUserInfo(@RequestBody UserInfoParam user) {
+    @PostMapping(value = "/getInfo", produces = "application/json")
+    public ResultInfo<Map<String, Object>> getInfo(@RequestBody UserNameParam user) {
         String username = user.getUsername();
-        return userService.getUserInfoNotPwd(username);
+        return userService.getInfoByUsername(username);
     }
 
     /**
@@ -56,7 +56,7 @@ public class UserController {
     @ApiOperation(value = "用户登录", notes = "登录")
     @ApiImplicitParam(name = "user", value = "用户名与密码", required = true, paramType = "body", dataType = "UserLoginParam")
     @PostMapping(value = "/login")
-    public String getToken(@RequestBody UserLoginParam user) throws AuthenticationException {
+    public ResultInfo<Map<String, Object>> login(@RequestBody UserLoginParam user) throws AuthenticationException {
         String username = user.getUsername();
         String password = user.getPassword();
         return userService.login(username, password);
@@ -95,8 +95,8 @@ public class UserController {
         return userService.refreshToken(authorization);
     }
     
-    @PostMapping(value = "/updateUserInfo")
-    public ResultInfo<Map<String, Object>> updateUserInfo(@RequestBody UserModifyParam user) throws AuthenticationException {
+    @PostMapping(value = "/updateInfo")
+    public ResultInfo<Map<String, Object>> updateInfo(@RequestBody UserModifyParam user) throws AuthenticationException {
         UserInfo userTemp = new UserInfo(){
             {
                 setId(user.getId());
@@ -108,4 +108,4 @@ public class UserController {
         };
         return userService.updateUserInfo(userTemp);
     }
-}
+} 

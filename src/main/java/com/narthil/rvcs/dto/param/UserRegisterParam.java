@@ -8,7 +8,7 @@ import lombok.Data;
  * UserRegisterParam
  */
 @Data
-@ApiModel(value="UserModifyParam", description = "用户注册时的输入的数据")
+@ApiModel(value="UserRegisterParam", description = "用户注册时的输入的数据")
 public class UserRegisterParam {
     @ApiModelProperty(value="用户真名")
     private String name;

@@ -25,7 +25,7 @@ public class SwaggerConfig  {
                 "https://narthil.me");
         Docket docket = new Docket(DocumentationType.SWAGGER_2)
                 .select()
-                .paths(regex("/user/.*"))
+                .paths(regex("/.*"))
                 .build()
                 .apiInfo(apiInfo)
                 .useDefaultResponseMessages(false);

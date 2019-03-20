@@ -6,10 +6,11 @@ import java.util.List;
 import java.util.Map;
 
 import com.narthil.rvcs.dao.user.UserDao;
-import com.narthil.rvcs.dao.user.impl.UserRepository;
+import com.narthil.rvcs.dao.user.UserRepository;
 import com.narthil.rvcs.pojo.UserInfo;
 import com.narthil.rvcs.dto.ResultInfo;
 import com.narthil.rvcs.security.JwtTokenUtil;
+import com.narthil.rvcs.security.JwtUser;
 // import com.narthil.rvcs.security.JwtUser;
 import com.narthil.rvcs.service.UserService;
 
@@ -52,13 +53,33 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public String login(String username, String password) {
+    public ResultInfo<Map<String,Object>> login(String username, String password) {
         UsernamePasswordAuthenticationToken upToken = new UsernamePasswordAuthenticationToken(username, password);
         final Authentication authentication = authenticationManager.authenticate(upToken);
         SecurityContextHolder.getContext().setAuthentication(authentication);
         final UserDetails userDetails = userDetailsService.loadUserByUsername(username);
         final String token = jwtTokenUtil.generateToken(userDetails);
-        return token;
+
+        UserInfo userTemp=userRepository.findByUsername(username);
+        System.out.println(userTemp);
+        ResultInfo<Map<String,Object>> userResult=new ResultInfo<Map<String,Object>>();
+        if(userTemp!=null){
+            Map<String,Object> dataMap=new HashMap<String,Object>(){
+                {
+                    put("id", userTemp.getId());
+                    put("username", userTemp.getUsername());
+                    put("email", userTemp.getEmail());
+                    put("name", userTemp.getName());
+                    put("token",token);
+                }
+            };
+            userResult.setData(dataMap);
+            userResult.setStatus(1,"登录成功");
+        }else{
+            userResult.setStatus(0,"登录失败");
+        }
+
+        return userResult;
     }
 
     @Override
@@ -72,7 +93,7 @@ public class UserServiceImpl implements UserService {
                 BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
                 final String rawPassword = user.getPassword();
                 user.setPassword(encoder.encode(rawPassword));
-                List<String> roles = new ArrayList<>();
+                List<String> roles = new ArrayList<String>();
                 roles.add("USER");
                 user.setRoles(roles);
                 userRepository.insert(user);
@@ -90,9 +111,10 @@ public class UserServiceImpl implements UserService {
     @Override
     public String refreshToken(String oldToken) {
         String token = oldToken.substring(tokenHead.length());
-        // String username = jwtTokenUtil.getUsernameFromToken(token);
+        String username = jwtTokenUtil.getUsernameFromToken(token);
+        System.out.println(username);
         // JwtUser user = (JwtUser) userDetailsService.loadUserByUsername(username);
-        // System.out.println(username);
+        // System.out.println(user.getPassword()) ;
         if (!jwtTokenUtil.isTokenExpired(token)) {
             return jwtTokenUtil.refreshToken(token);
         }
@@ -100,7 +122,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public ResultInfo<Map<String,Object>> getUserInfoNotPwd(String username) {
+    public ResultInfo<Map<String,Object>> getInfoByUsername(String username) {
         UserInfo userTemp = userRepository.findByUsername(username);
         ResultInfo<Map<String,Object>> userResult=new ResultInfo<Map<String,Object>>();
         if(userTemp!=null){
@@ -142,4 +164,6 @@ public class UserServiceImpl implements UserService {
         }
         return userResult;
     }
+
+
 }

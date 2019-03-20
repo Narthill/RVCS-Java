@@ -38,8 +38,7 @@ public class UserDaoImpl implements UserDao{
             update.set("password", user.getPassword());
         }
 
-        UserInfo updatedUser=new UserInfo();
-        updatedUser=mongoTemplate.findAndModify(query, update,FindAndModifyOptions.options().returnNew(true),UserInfo.class);
+        UserInfo updatedUser=mongoTemplate.findAndModify(query, update,FindAndModifyOptions.options().returnNew(true),UserInfo.class);
         if (updatedUser!=null) {
             return updatedUser;
         }

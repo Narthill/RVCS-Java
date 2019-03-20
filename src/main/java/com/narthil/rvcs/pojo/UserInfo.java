@@ -17,9 +17,9 @@ import lombok.Data;
 @Document(collection = "UserInfo")
 @ApiModel(value="UserInfo", description = "用户所有信息json描述")
 public class UserInfo {
-    @Id
+    
     @ApiModelProperty(value="用户ID")
-    private String id;
+    @Id private String id;
     @ApiModelProperty(value="用户真名")
     private String name;
     @ApiModelProperty(value="用户邮箱")
@@ -30,4 +30,5 @@ public class UserInfo {
     private String password;
     @ApiModelProperty(value="用户系统权限")
     private List<String> roles;
+    
 }

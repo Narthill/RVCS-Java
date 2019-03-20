@@ -15,7 +15,7 @@ public class ResultInfo<T> {
     private int status;
     @ApiModelProperty(value="状态信息")
     private String message;
-    @ApiModelProperty(value="数据",example="{'name':'chenhao','username':'narthil'}")
+    @ApiModelProperty(value="数据",example="{'字段':'值'}")
     private T data ;
 
     public void setStatus(int code,String message){

@@ -1,6 +1,6 @@
 package com.narthil.rvcs.security;
 
-import com.narthil.rvcs.dao.user.impl.UserRepository;
+import com.narthil.rvcs.dao.user.UserRepository;
 import com.narthil.rvcs.pojo.UserInfo;
 
 import org.springframework.beans.factory.annotation.Autowired;
