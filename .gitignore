@@ -26,3 +26,8 @@ HELP.md
 /build/
 
 *.yml
+.vscode
+.settings
+.mvn
+mvnw
+mvnw.cmd
