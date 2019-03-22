@@ -14,6 +14,6 @@ public class ComCreatParam {
     private String name;
     @ApiModelProperty(value="公司描述", required = true)
     private String desc;
-    @ApiModelProperty(value="创建公司的用户id", required = true)
-    private String userId;
+    // @ApiModelProperty(value="创建公司的用户id", required = true)
+    // private String userId;
 }

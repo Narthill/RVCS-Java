@@ -19,7 +19,7 @@
   <script>
     function login() {
       $.ajax({
-        url: "/user/login",
+        url: "/api/user/login",
         dataType: "json",
         data: JSON.stringify({
           "username": $("#username").val(),

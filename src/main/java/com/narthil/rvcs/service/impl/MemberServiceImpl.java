@@ -24,15 +24,14 @@ public class MemberServiceImpl implements MemberService{
     private MemberRepository memberRepository;
 
     // 添加成员
-    public  ResultInfo<Map<String,Object>> addMember(MemberInfo member,String adminId) {
-        ResultInfo<Map<String,Object>> orgResult=new ResultInfo<Map<String,Object>>();
+    public  ResultInfo<Map<String,Object>> addMember(MemberInfo member,String userId) {
+        ResultInfo<Map<String,Object>> memResult=new ResultInfo<Map<String,Object>>();
         // 判断权限,以当前操作者的根组织和其id进行判断
         if(member!=null){
-            int auth=memberDao.getAuthNum(member.getRootId(),adminId);
-            System.out.println("操作者权限"+auth);
+            int auth=memberDao.getAuthNum(member.getRootId(),userId);
             if(auth!=1&&auth!=2){
-                orgResult.setStatus(0,"权限不足");
-                return orgResult;
+                memResult.setStatus(401,"权限不足");
+                return memResult;
             }
             // 判断待添加的用户是否已经存在在该公司
             if(memberDao.findByUserIdAndRootId(member.getRootId(),member.getUserId())==null){
@@ -41,27 +40,47 @@ public class MemberServiceImpl implements MemberService{
                 MemberInfo mTemp=memberRepository.save(member);
         
                 Map<String,Object> dataMap=new HashMap<String,Object>(){
+                    private static final long serialVersionUID = -5985072152836372366L;
+
                     {
                         // put("id",mTemp.getId());
                         put("userId", mTemp.getUserId());
-                        // put("rootId", mTemp.getRootId());
+                        put("rootId", mTemp.getRootId());
                         put("orgId", mTemp.getOrgId());
                         put("auth",mTemp.getAuth());
                         put("authDesc",mTemp.getAuthDesc());
                     }
                 };
-                orgResult.setData(dataMap);
-                orgResult.setStatus(1,"添加成员成功");
+                memResult.setData(dataMap);
+                memResult.setStatus(201,"添加成员成功");
             }else{
-                orgResult.setStatus(0,"此成员已经在该公司中");
+                memResult.setStatus(400,"此成员已经在该公司中");
             }
 
         }else{
-            orgResult.setStatus(0,"添加成员失败");
+            memResult.setStatus(400,"添加成员失败");
         }
         
-        return orgResult;
+        return memResult;
     }
+
+
+    // 删除成员
+    // public ResultInfo<Object> deleteMember(MemberInfo member,String userId){
+    //     ResultInfo<Object> memResult=new ResultInfo<Object>();
+    //     if(member!=null){
+    //         int auth=memberDao.getAuthNum(member.getRootId(),userId);
+    //         if(auth!=1&&auth!=2){
+    //             memResult.setStatus(401,"权限不足");
+    //             return memResult;
+    //         }
+    //         // 验证此人是否在公司
+    //         if(memberDao.findByUserIdAndRootId(member.getRootId(),member.getUserId())!=null){
+
+    //         }
+
+    //     return null;
+    // }
 
     // 修改成员权限
     public ResultInfo<Object> updateAuth(String rootId,String userId,String adminId,int auth){

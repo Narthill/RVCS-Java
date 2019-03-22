@@ -8,4 +8,6 @@ import com.narthil.rvcs.pojo.UserInfo;
 public interface UserDao {
 
     UserInfo updateUserInfo(UserInfo user);
+    UserInfo addfriend(String userId,String friendId);
+    UserInfo deletefriend(String userId,String friendId);
 }

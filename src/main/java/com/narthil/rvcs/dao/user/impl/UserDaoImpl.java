@@ -1,6 +1,8 @@
 package com.narthil.rvcs.dao.user.impl;
 import com.narthil.rvcs.dao.user.UserDao;
 import com.narthil.rvcs.pojo.UserInfo;
+
+import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.FindAndModifyOptions;
 import org.springframework.data.mongodb.core.MongoTemplate;
@@ -30,10 +32,6 @@ public class UserDaoImpl implements UserDao{
             update.set("username", user.getUsername());
         }
 
-        if(user.getName()!=null){
-            update.set("name", user.getName());
-        }
-
         if(user.getPassword()!=null){
             update.set("password", user.getPassword());
         }
@@ -43,5 +41,21 @@ public class UserDaoImpl implements UserDao{
             return updatedUser;
         }
         return null;
+    }
+
+    public UserInfo addfriend(String userId,String friendId){
+        Query query = new Query(Criteria.where("_id").is(userId));
+        Update update = new Update().addToSet("friends",new ObjectId(friendId));
+        UserInfo user=mongoTemplate.findAndModify(query, update,FindAndModifyOptions.options().returnNew(true),UserInfo.class);
+
+        return user;
+    }
+
+    public UserInfo deletefriend(String userId,String friendId){
+        Query query = new Query(Criteria.where("_id").is(userId));
+        Update update = new Update().pull("friends",new ObjectId(friendId));
+        UserInfo user=mongoTemplate.findAndModify(query, update,FindAndModifyOptions.options().returnNew(true),UserInfo.class);
+
+        return user;
     }
 }

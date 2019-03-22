@@ -20,15 +20,17 @@ public class UserInfo {
     
     @ApiModelProperty(value="用户ID")
     @Id private String id;
-    @ApiModelProperty(value="用户真名")
-    private String name;
     @ApiModelProperty(value="用户邮箱")
     private String email;
     @ApiModelProperty(value="用户名")
     private String username;
     @ApiModelProperty(value="用户密码")
     private String password;
-    @ApiModelProperty(value="用户系统权限")
+    @ApiModelProperty(value="系统级别权限")
     private List<String> roles;
-    
+    @ApiModelProperty(value="朋友id列表")
+    private List<String> friends;
+    @ApiModelProperty(value="群id列表")
+    private List<String> group;
+
 }

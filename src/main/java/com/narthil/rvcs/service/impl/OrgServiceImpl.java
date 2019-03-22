@@ -1,6 +1,4 @@
 package com.narthil.rvcs.service.impl;
-
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -37,7 +35,6 @@ public class OrgServiceImpl implements OrgService{
     // 创建公司
     @Override
     public ResultInfo<Map<String,Object>> createCompany(OrgInfo company,String userId){
-
         ResultInfo<Map<String,Object>> orgResult=new ResultInfo<Map<String,Object>>();
         if(company!=null){
             //节点表插入数据，返回
@@ -57,6 +54,7 @@ public class OrgServiceImpl implements OrgService{
 
             //构建返回结果 
             Map<String,Object> dataMap=new HashMap<String,Object>(){
+                private static final long serialVersionUID = -1281561783377184655L;
                 {
                     put("id",comTemp.getId());
                     put("root",comTemp.getRoot());
@@ -67,23 +65,22 @@ public class OrgServiceImpl implements OrgService{
             };
 
             orgResult.setData(dataMap);
-            orgResult.setStatus(1,"添加公司信息成功");
+            orgResult.setStatus(201,"添加公司信息成功");
         }else{
-            orgResult.setStatus(0,"添加公司信息失败");
+            orgResult.setStatus(400,"添加公司信息失败");
         }
         return orgResult;
     }
 
     // 创建节点
     public ResultInfo<Map<String,Object>> createOrg(OrgInfo node,String userId){
-
         ResultInfo<Map<String,Object>> orgResult=new ResultInfo<Map<String,Object>>();
         String parent=node.getParent();
         // 判断权限
         int auth=memberDao.getAuthNum(node.getRootId(),userId);
         System.out.println(auth);
         if(auth!=1&&auth!=2){
-            orgResult.setStatus(0,"权限不足");
+            orgResult.setStatus(403,"权限不足");
             return orgResult;
         }
 
@@ -91,6 +88,7 @@ public class OrgServiceImpl implements OrgService{
         OrgInfo orgTemp = orgRepository.insert(node);
         // 编写返回信息
         Map<String, Object> dataMap = new HashMap<String, Object>() {
+            private static final long serialVersionUID = -3481810455141588577L;
             {
                 put("id", orgTemp.getId());
                 put("root", orgTemp.getRoot());
@@ -101,15 +99,13 @@ public class OrgServiceImpl implements OrgService{
             }
         };
         String childId = orgTemp.getId();
-
         if (orgDao.insertChildNode(parent, childId)) {
             orgResult.setData(dataMap);
-            orgResult.setStatus(1, "添加组织节点成功");
+            orgResult.setStatus(201, "添加组织节点成功");
         } else {
             // 应当删除
-            orgResult.setStatus(0, "父节点添加组织节点失败");
+            orgResult.setStatus(400, "父节点添加组织节点失败");
         }
-        
         return orgResult;
     }
 
@@ -122,16 +118,17 @@ public class OrgServiceImpl implements OrgService{
             List<MemberInfo> memberTable= memberRepository.findByOrgId(orgId);
 
             Map<String,Object> dataMap=new HashMap<String,Object>(){
+                private static final long serialVersionUID = 7876222434342731893L;
                 {
                     put("orgInfo",orgInfo);
                     put("members",memberTable);
                 }
             };
             orgResult.setData(dataMap);
-            orgResult.setStatus(1,"查询成功");
+            orgResult.setStatus(200,"查询成功");
 
         }else{
-            orgResult.setStatus(0,"查询失败");
+            orgResult.setStatus(404,"查询失败");
         }
         return orgResult;
     }
@@ -150,13 +147,14 @@ public class OrgServiceImpl implements OrgService{
                      comList.add( orgDao.findComInfo(tmp.getRootId()));
                 }
                 orgResult.setData(comList);
-                orgResult.setStatus(1,"查询成功");
+                orgResult.setStatus(200,"查询成功");
             }else{
-                orgResult.setStatus(0,"该用户未加入任何组织");
+                orgResult.setStatus(404,"该用户未加入任何组织");
             }
         }else{
-            orgResult.setStatus(0,"查询失败");
+            orgResult.setStatus(404,"查询失败");
         }
         return orgResult;
     }
+
 }

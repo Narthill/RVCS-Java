@@ -1,7 +1,5 @@
 package com.narthil.rvcs.dao.org;
 
-import java.util.List;
-
 import com.narthil.rvcs.pojo.OrgInfo;
 
 import org.springframework.data.mongodb.repository.MongoRepository;

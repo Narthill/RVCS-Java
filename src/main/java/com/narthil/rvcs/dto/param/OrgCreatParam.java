@@ -19,6 +19,6 @@ public class OrgCreatParam {
     private String parent;
     @ApiModelProperty(value="根节点id", required = true)
     private String rootId;
-    @ApiModelProperty(value="创建节点的用户id", required = true)
-    private String userId;
+    // @ApiModelProperty(value="创建节点的用户id", required = true)
+    // private String userId;
 }

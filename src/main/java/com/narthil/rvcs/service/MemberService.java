@@ -11,4 +11,5 @@ import com.narthil.rvcs.pojo.MemberInfo;
 public interface MemberService {
     ResultInfo<Map<String,Object>> addMember(MemberInfo member,String userId);
     ResultInfo<Object> updateAuth(String rootId,String userId,String adminId,int auth);
+      // ResultInfo<Object> deleteMember(MemberInfo member,String userId);
 } 

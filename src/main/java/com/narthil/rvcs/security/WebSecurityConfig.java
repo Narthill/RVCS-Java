@@ -27,11 +27,10 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     @Autowired
     private UserDetailsService userDetailsService;
     // private PasswordEncoder passwordEncoder;
-
-    public WebSecurityConfig(UserDetailsService userDetailsService, JwtAuthenticationTokenFilter jwtAuthenticationTokenFilter) {
-        this.userDetailsService = userDetailsService;
-        // this.passwordEncoder = new BCryptPasswordEncoder();
-    }
+    @Autowired
+    private EntryPointUnauthorizedHandler entryPointUnauthorizedHandler;
+    @Autowired
+    private RestAccessDeniedHandler restAccessDeniedHandler;
 
 
     @Autowired
@@ -66,12 +65,12 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         httpSecurity.csrf().disable()
                 // 基于token，所以不需要session
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and().authorizeRequests()
-                .antMatchers(HttpMethod.OPTIONS, "/**").permitAll()
+                // .antMatchers(HttpMethod.OPTIONS, "/**").permitAll()
                 // 允许对于网站静态资源的无授权访问
                 .antMatchers(HttpMethod.GET, "/", "/*.html", "/favicon.ico", "/**/*.html", "/**/*.css", "/**/*.js").permitAll()
                 // 对于获取token的rest api要允许匿名访问
-                .antMatchers("/user/login","/user/register","/user/refreshToken").permitAll()
-
+                .antMatchers("/api/user/login","/api/user/register","/api/user/refreshToken","/api/user/test").permitAll()
+                // swagger
                 .antMatchers("/v2/api-docs", "/configuration/ui", "/swagger-resources", "/configuration/security", "/swagger-ui.html", "/webjars/**","/swagger-resources/configuration/ui","/swagge‌​r-ui.html").permitAll()
                 // 除上面外的所有请求全部需要鉴权认证
                 .anyRequest().authenticated();
@@ -80,5 +79,6 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         httpSecurity.headers().cacheControl();
 
         httpSecurity.addFilterBefore(authenticationTokenFilterBean(), UsernamePasswordAuthenticationFilter.class);
+        httpSecurity.exceptionHandling().authenticationEntryPoint(entryPointUnauthorizedHandler).accessDeniedHandler(restAccessDeniedHandler);
     }
 }

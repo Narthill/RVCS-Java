@@ -27,7 +27,7 @@ public class OrgDaoImpl implements OrgDao{
 
         OrgInfo parent=mongoTemplate.findAndModify(query, update,FindAndModifyOptions.options().returnNew(true),OrgInfo.class);
         
-        System.out.println(parent);
+        // System.out.println(parent);
         if (parent!=null) {
             return true;
         }else{

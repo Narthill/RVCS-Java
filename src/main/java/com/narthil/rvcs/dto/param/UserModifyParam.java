@@ -10,13 +10,10 @@ import lombok.Data;
 @Data
 @ApiModel(value="UserModifyParam", description = "修改用户信息时的输入的数据")
 public class UserModifyParam {
-    private String id;
-    @ApiModelProperty(value="用户真名")
-    private String name;
-    @ApiModelProperty(value="用户邮箱")
+    @ApiModelProperty(value="用户邮箱",required = false)
     private String email;
-    @ApiModelProperty(value="用户名")
+    @ApiModelProperty(value="用户名",required = false)
     private String username;
-    @ApiModelProperty(value="用户密码")
+    @ApiModelProperty(value="用户密码",required = false)
     private String password;
 }
