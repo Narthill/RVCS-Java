@@ -3,11 +3,10 @@ package com.narthil.rvcs.ws.dto;
 import lombok.Data;
 
 /**
- * AddFrend
+ * Usename
  */
 @Data
-public class NewFriend {
+public class Username {
 
     private String username;
-    private String friendName;
 }

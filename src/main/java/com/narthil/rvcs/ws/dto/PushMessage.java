@@ -1,5 +1,7 @@
 package com.narthil.rvcs.ws.dto;
 
+import java.util.Date;
+
 import lombok.Data;
 
 /**
@@ -8,8 +10,8 @@ import lombok.Data;
 @Data
 public class PushMessage {
 
-    private String userId;
+    private String source;
     private String message;
-    private String targetId;
+    private String target;
     private String groupId;
 }

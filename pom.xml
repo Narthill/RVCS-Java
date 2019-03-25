@@ -10,6 +10,7 @@
   <groupId>com.narthil</groupId>
   <artifactId>rvcs</artifactId>
   <version>0.0.1-SNAPSHOT</version>
+  <packaging>jar</packaging>
   <name>demo</name>
   <description>Demo project for Spring Boot</description>
   <properties>
@@ -43,6 +44,7 @@
       <groupId>org.projectlombok</groupId>
       <artifactId>lombok</artifactId>
       <scope>annotationProcessor</scope>
+      <version>1.18.4</version>
     </dependency>
     <dependency>
       <groupId>org.springframework.boot</groupId>

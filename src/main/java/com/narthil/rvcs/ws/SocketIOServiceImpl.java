@@ -64,7 +64,10 @@ public class SocketIOServiceImpl implements SocketIOService {
             // UserInfo user=userRepository.findById(userId);
             // if(user!=null){
             //     for (String groupId : user.getGroups()) {
-            //         client.joinRoom(groupId);
+            client.joinRoom("群1");
+            client.joinRoom("群2");
+            client.joinRoom("群3");
+            client.joinRoom("群4");
             //     }
             // }
 
@@ -83,57 +86,72 @@ public class SocketIOServiceImpl implements SocketIOService {
                 client.disconnect();
             }
         });
+        // 获取连接
+        socketIOServer.addEventListener("start", Username.class, (client, data, ackSender) -> {
+            // TODO do something
+            String sa = client.getRemoteAddress().toString();
+            String clientIp = sa.substring(1, sa.indexOf(":"));
+
+            System.out.println(data.getUsername()+"上线，客户端ip: "+clientIp);
+            clientMap.put(data.getUsername(), client);
+            // data.setMessage(data.getMessage()+"-----------时间："+new Date().toLocaleString());
+            // socketIOServer.getRoomOperations(data.getGroupId()).sendEvent("groupChatEvent",data);
+        });
 
         // 群聊
         socketIOServer.addEventListener("groupChatEvent", PushMessage.class, (client, data, ackSender) -> {
             // TODO do something
             String sa = client.getRemoteAddress().toString();
             String clientIp = sa.substring(1, sa.indexOf(":"));
-
-            System.out.println(data.getUserId()+"发来消息：" + data.getMessage()+"ip: "+clientIp);
+            // System.out.println(data.getGroupId());
+            System.out.println(data.getSource()+"发来消息：" + data.getMessage()+"ip: "+clientIp);
             data.setMessage(data.getMessage()+"-----------时间："+new Date().toLocaleString());
             socketIOServer.getRoomOperations(data.getGroupId()).sendEvent("groupChatEvent",data);
         });
 
         // 单聊
         socketIOServer.addEventListener("chatEvent", PushMessage.class, (client, data, ackSender) -> {
-            System.out.println(data.getUserId()+"发来消息：" + data.getMessage());
-            // socketIOServer.getBroadcastOperations().sendEvent("groupChatEvent",data);
-            data.setMessage(data.getMessage()+"-----------时间："+new Date().toLocaleString());
+
+            System.out.println("单聊"+data.getSource()+"发来消息：" + data.getMessage());
+
             // 源
-            SocketIOClient fromSocketIoClient = clientMap.get(data.getUserId());
+            SocketIOClient fromSocketIoClient = clientMap.get(data.getSource());
             // 目标
-            SocketIOClient toSocketIoClient = clientMap.get(data.getTargetId());
+            SocketIOClient toSocketIoClient = clientMap.get(data.getTarget());
 
             
 
-            System.out.println("目标"+data.getTargetId()); 
+            System.out.println("目标"+data.getTarget()); 
             if(toSocketIoClient!=null){
                 toSocketIoClient.sendEvent("chatEvent",data);
             }
-            if(fromSocketIoClient!=null){
-                fromSocketIoClient.sendEvent("chatEvent",data);
-            }
+            // if(fromSocketIoClient!=null){
+            //     fromSocketIoClient.sendEvent("chatEvent",data);
+            // }
         });
 
         // 好友添加
-        socketIOServer.addEventListener("newFriend", NewFriend.class, (client, data, ackSender) -> {
-            System.out.println(data.getSourceId()+"请求添加好友"+data.getTargetId() );
+        socketIOServer.addEventListener("addFriend", NewFriend.class, (client, data, ackSender) -> {
+            System.out.println(data.getUsername()+"请求添加好友"+data.getFriendName() );
             // // socketIOServer.getBroadcastOperations().sendEvent("groupChatEvent",data);
             // // 源
-            // SocketIOClient fromSocketIoClient = clientMap.get(data.getUserId());
+            SocketIOClient fromSocketIoClient = clientMap.get(data.getUsername());
+            ResultInfo<Map<String,Object>> user=userService.getInfoByUsername(data.getUsername());
             // // 目标
-            SocketIOClient toSocketIoClient = clientMap.get(data.getTargetId());
-
+            
+            SocketIOClient toSocketIoClient = clientMap.get(data.getFriendName());
+            ResultInfo<Map<String,Object>> friend=userService.getInfoByUsername(data.getFriendName());
+            // 添加
+            userService.addFriend((String)user.getData().get("id"), (String)friend.getData().get("id"));
             // toSocketIoClient.
-            ResultInfo<Map<String,Object>> user=userService.getInfoByUserId(data.getSourceId());
+            
             // System.out.println("目标"+data.getTargetId()); 
             if(toSocketIoClient!=null){
-                toSocketIoClient.sendEvent("newFriend",user.getData());
+                toSocketIoClient.sendEvent("addFriend",user.getData());
             }
-            // if(fromSocketIoClient!=null){
-            //     fromSocketIoClient.sendEvent("newFriend",data);
-            // }
+            if(fromSocketIoClient!=null){
+                fromSocketIoClient.sendEvent("addFriend",friend.getData());
+            }
         });
 
         socketIOServer.start();
@@ -165,7 +183,7 @@ public class SocketIOServiceImpl implements SocketIOService {
     private String getUserIdByClient(SocketIOClient client) {
         // 从请求的连接中拿出参数（这里的userId必须是唯一标识）
         Map<String, List<String>> params = client.getHandshakeData().getUrlParams();
-        List<String> list = params.get("userId");
+        List<String> list = params.get("source");
         if (list != null && list.size() > 0) {
             return list.get(0);
         }

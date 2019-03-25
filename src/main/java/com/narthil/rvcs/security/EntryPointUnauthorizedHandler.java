@@ -13,7 +13,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import com.google.gson.Gson;
-import com.narthil.rvcs.dto.ResultInfo;
 
 /**
  * 自定401返回值

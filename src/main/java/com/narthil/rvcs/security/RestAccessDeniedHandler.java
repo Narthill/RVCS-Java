@@ -7,8 +7,6 @@ import org.springframework.stereotype.Component;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import com.narthil.rvcs.dto.ResultInfo;
-
 import java.io.IOException;
 
 /**

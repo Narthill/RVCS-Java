@@ -3,7 +3,6 @@ package com.narthil.rvcs.dao.group.impl;
 import com.narthil.rvcs.dao.group.GroupDao;
 import com.narthil.rvcs.pojo.GroupInfo;
 
-import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.FindAndModifyOptions;
 import org.springframework.data.mongodb.core.MongoTemplate;
