@@ -79,7 +79,9 @@ public class UserController {
 
         Map<String,String> status=new HashMap<String,String>();
         status.put("status", res.getOk());
-
+        if(res.getOk().equals("error")){
+            status.put("statusText", res.getStatusText());
+        }
         return new ResponseEntity<Object>(status,HttpStatus.valueOf(res.getStatus()));
     }
 
@@ -132,16 +134,16 @@ public class UserController {
     @ApiImplicitParams({
             @ApiImplicitParam(name = "authorization", value = "token", required = true, paramType = "header", defaultValue = "Bearer +token"),
             @ApiImplicitParam(name = "friendId", value = "好友id", required = true, paramType = "path", dataType = "String") })
-    public ResponseEntity<Map<String, Object>> addFriend(@RequestParam("friendId") String friendId ) throws AuthenticationException{
+    public ResponseEntity<Object> addFriend(@RequestParam("friendId") String friendId ) throws AuthenticationException{
 
         // HttpHeaders headers = new HttpHeaders();
-        ResultInfo<Map<String, Object>> res = userService.addFriend(currentUser.getUserId(), friendId);
+        ResultInfo<Object> res = userService.addFriend(currentUser.getUserId(), friendId);
         // headers.add("statusText",res.getStatusText());
-        return new ResponseEntity<Map<String, Object>>(res.getData(),HttpStatus.valueOf(res.getStatus()));
+        return new ResponseEntity<Object>(HttpStatus.valueOf(res.getStatus()));
     }
 
 
-    @RequestMapping(value = "/deleteFriend", method = RequestMethod.DELETE)
+    @RequestMapping(value = "/deleteFriend", method = RequestMethod.GET)
     @ApiOperation(value = "删除好友", notes = "删除")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "authorization", value = "token", required = true, paramType = "header", defaultValue = "Bearer +token"),
@@ -159,8 +161,66 @@ public class UserController {
     public ResponseEntity<Map<String, Object>> getFriendsList() throws AuthenticationException{
 
         ResultInfo<Map<String, Object>> res = userService.getFriendsList(currentUser.getUserId());
-        // 204不会有任何body返回
         return new ResponseEntity<Map<String, Object>>(res.getData(),HttpStatus.valueOf(res.getStatus()));
     }
 
+    // 群
+    @GetMapping(value = "/getGroupsList")
+    @ApiOperation(value = "获取个人的群列表", notes = "获取")
+    @ApiImplicitParam(name = "authorization", value = "token", required = true, paramType = "header", defaultValue = "Bearer +token")
+    public ResponseEntity<Map<String, Object>> getGroupsList() throws AuthenticationException{
+
+        ResultInfo<Map<String, Object>> res = userService.getGroupsList(currentUser.getUserId());
+        return new ResponseEntity<Map<String, Object>>(res.getData(),HttpStatus.valueOf(res.getStatus()));
+    }
+
+    // 新建群
+    @GetMapping(value = "/newGroup")
+    @ApiOperation(value = "新建群", notes = "新建")
+    @ApiImplicitParams({
+        @ApiImplicitParam(name = "groupName", value = "群组名", required = true, paramType = "path", dataType = "String"),
+        @ApiImplicitParam(name = "authorization", value = "token", required = true, paramType = "header", defaultValue = "Bearer +token")
+    })
+    public ResponseEntity<Map<String, Object>> newGroup(@RequestParam("groupName") String groupName) throws AuthenticationException{
+        ResultInfo<Map<String, Object>> res = userService.newGroup(currentUser.getUserId(), groupName);
+        return new ResponseEntity<Map<String, Object>>(res.getData(),HttpStatus.valueOf(res.getStatus()));
+    }
+    
+    // 获取群信息
+    @GetMapping(value = "/getGroupInfo")
+    @ApiOperation(value = "获取群信息", notes = "获取")
+    @ApiImplicitParams({
+        @ApiImplicitParam(name = "groupId", value = "群id", required = true, paramType = "path", dataType = "String"),
+        @ApiImplicitParam(name = "authorization", value = "token", required = true, paramType = "header", defaultValue = "Bearer +token")
+    })
+    public ResponseEntity<Map<String, Object>> getGroupInfo(@RequestParam("groupId") String groupId) throws AuthenticationException{
+        ResultInfo<Map<String, Object>> res = userService.getGroupInfo(groupId);
+        return new ResponseEntity<Map<String, Object>>(res.getData(),HttpStatus.valueOf(res.getStatus()));
+    }
+
+    // 更新群信息
+    @GetMapping(value = "/updateGroup")
+    @ApiOperation(value = "修改群信息", notes = "修改")
+    @ApiImplicitParams({
+        @ApiImplicitParam(name = "groupId", value = "群id", required = true, paramType = "path", dataType = "String"),
+        @ApiImplicitParam(name = "groupName", value = "修改的群名", required = true, paramType = "path", dataType = "String"),
+        @ApiImplicitParam(name = "authorization", value = "token", required = true, paramType = "header", defaultValue = "Bearer +token")
+    })
+    public ResponseEntity<Map<String, Object>> updateGroup(@RequestParam("groupId") String groupId,@RequestParam("groupName") String groupName){
+        ResultInfo<Map<String, Object>> res =userService.updateGroup(currentUser.getUserId(), groupId, groupName);
+        return new ResponseEntity<Map<String, Object>>(res.getData(),HttpStatus.valueOf(res.getStatus()));
+    }
+
+    // 添加群成员，群表添加，个人的群列表也添加
+    @GetMapping(value = "/addGroupMember")
+    @ApiOperation(value = "添加群成员", notes = "添加")
+    @ApiImplicitParams({
+        @ApiImplicitParam(name = "groupId", value = "群id", required = true, paramType = "path", dataType = "String"),
+        @ApiImplicitParam(name = "memberId", value = "成员id", required = true, paramType = "path", dataType = "String"),
+        @ApiImplicitParam(name = "authorization", value = "token", required = true, paramType = "header", defaultValue = "Bearer +token")
+    })
+    public ResponseEntity<Map<String, Object>> addGroupMember(@RequestParam("memberId") String memberId,@RequestParam("groupId") String groupId){
+        ResultInfo<Map<String, Object>> res=userService.addGroupMember(currentUser.getUserId(), memberId, groupId);
+        return new ResponseEntity<Map<String, Object>>(res.getData(),HttpStatus.valueOf(res.getStatus()));
+    }
 }

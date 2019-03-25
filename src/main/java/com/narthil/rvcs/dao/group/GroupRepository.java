@@ -7,5 +7,5 @@ import org.springframework.data.mongodb.repository.MongoRepository;
  * ContactRepository
  */
 public interface GroupRepository extends MongoRepository<GroupInfo, Long> {
-
+    GroupInfo findById(String id);
 }

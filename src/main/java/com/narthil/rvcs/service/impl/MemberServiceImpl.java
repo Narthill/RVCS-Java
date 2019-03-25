@@ -52,7 +52,7 @@ public class MemberServiceImpl implements MemberService{
                     }
                 };
                 memResult.setData(dataMap);
-                memResult.setStatus(201,"添加成员成功");
+                memResult.setStatus(200,"添加成员成功");
             }else{
                 memResult.setStatus(400,"此成员已经在该公司中");
             }

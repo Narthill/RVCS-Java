@@ -31,6 +31,6 @@ public class UserInfo {
     @ApiModelProperty(value="朋友id列表")
     private List<String> friends;
     @ApiModelProperty(value="群id列表")
-    private List<String> group;
+    private List<String> groups;
 
 }

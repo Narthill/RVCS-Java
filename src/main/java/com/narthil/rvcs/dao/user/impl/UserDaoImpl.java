@@ -36,7 +36,7 @@ public class UserDaoImpl implements UserDao{
             update.set("password", user.getPassword());
         }
 
-        UserInfo updatedUser=mongoTemplate.findAndModify(query, update,FindAndModifyOptions.options().returnNew(true),UserInfo.class);
+        UserInfo updatedUser=mongoTemplate.findAndModify(query, update,FindAndModifyOptions.options().returnNew(true),UserInfo.class,"UserInfo");
         if (updatedUser!=null) {
             return updatedUser;
         }
@@ -46,7 +46,7 @@ public class UserDaoImpl implements UserDao{
     public UserInfo addfriend(String userId,String friendId){
         Query query = new Query(Criteria.where("_id").is(userId));
         Update update = new Update().addToSet("friends",new ObjectId(friendId));
-        UserInfo user=mongoTemplate.findAndModify(query, update,FindAndModifyOptions.options().returnNew(true),UserInfo.class);
+        UserInfo user=mongoTemplate.findAndModify(query, update,FindAndModifyOptions.options().returnNew(true),UserInfo.class,"UserInfo");
 
         return user;
     }
@@ -54,8 +54,22 @@ public class UserDaoImpl implements UserDao{
     public UserInfo deletefriend(String userId,String friendId){
         Query query = new Query(Criteria.where("_id").is(userId));
         Update update = new Update().pull("friends",new ObjectId(friendId));
-        UserInfo user=mongoTemplate.findAndModify(query, update,FindAndModifyOptions.options().returnNew(true),UserInfo.class);
+        UserInfo user=mongoTemplate.findAndModify(query, update,FindAndModifyOptions.options().returnNew(true),UserInfo.class,"UserInfo");
 
+        return user;
+    }
+
+    public UserInfo addGroup(String userId,String groupId){
+        Query query = new Query(Criteria.where("_id").is(userId));
+        Update update = new Update().addToSet("groups",new ObjectId(groupId));
+        UserInfo user=mongoTemplate.findAndModify(query, update,FindAndModifyOptions.options().returnNew(true),UserInfo.class,"UserInfo");
+        return user;
+    }
+
+    public UserInfo deleteGroup(String userId,String groupId){
+        Query query = new Query(Criteria.where("_id").is(userId));
+        Update update = new Update().pull("groups",new ObjectId(groupId));
+        UserInfo user=mongoTemplate.findAndModify(query, update,FindAndModifyOptions.options().returnNew(true),UserInfo.class,"UserInfo");
         return user;
     }
 }

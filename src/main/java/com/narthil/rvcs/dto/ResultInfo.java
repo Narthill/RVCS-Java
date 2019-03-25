@@ -1,8 +1,5 @@
 package com.narthil.rvcs.dto;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;

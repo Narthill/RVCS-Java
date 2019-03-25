@@ -65,7 +65,7 @@ public class OrgServiceImpl implements OrgService{
             };
 
             orgResult.setData(dataMap);
-            orgResult.setStatus(201,"添加公司信息成功");
+            orgResult.setStatus(200,"添加公司信息成功");
         }else{
             orgResult.setStatus(400,"添加公司信息失败");
         }
@@ -101,7 +101,7 @@ public class OrgServiceImpl implements OrgService{
         String childId = orgTemp.getId();
         if (orgDao.insertChildNode(parent, childId)) {
             orgResult.setData(dataMap);
-            orgResult.setStatus(201, "添加组织节点成功");
+            orgResult.setStatus(200, "添加组织节点成功");
         } else {
             // 应当删除
             orgResult.setStatus(400, "父节点添加组织节点失败");

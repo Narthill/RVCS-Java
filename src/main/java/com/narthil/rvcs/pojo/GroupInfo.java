@@ -13,7 +13,7 @@ import lombok.Data;
  * GroupInfo
  */
 @Data
-@Document(collection = "ContactInfo")
+@Document(collection = "GroupInfo")
 @ApiModel(value="GroupInfo", description = "群组信息")
 public class GroupInfo {
     

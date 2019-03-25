@@ -25,7 +25,7 @@ public class OrgDaoImpl implements OrgDao{
         Query query = new Query(Criteria.where("_id").is(parentId));
         Update update = new Update().push("children",childId);
 
-        OrgInfo parent=mongoTemplate.findAndModify(query, update,FindAndModifyOptions.options().returnNew(true),OrgInfo.class);
+        OrgInfo parent=mongoTemplate.findAndModify(query, update,FindAndModifyOptions.options().returnNew(true),OrgInfo.class,"OrgInfo");
         
         // System.out.println(parent);
         if (parent!=null) {

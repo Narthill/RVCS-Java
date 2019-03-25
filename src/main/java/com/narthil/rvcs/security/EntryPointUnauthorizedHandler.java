@@ -5,6 +5,8 @@ import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -27,8 +29,11 @@ public class EntryPointUnauthorizedHandler implements AuthenticationEntryPoint {
         response.setHeader("Access-Control-Allow-Origin", "*");
         response.setStatus(401);
         response.setContentType("application/json;charset=UTF-8");
-        ResultInfo<Object> res=new ResultInfo<>();
-        res.setStatus(401, "无权");
+
+        Map<String,Object> res=new HashMap<>();
+        res.put("status", "error");
+        res.put("statusText","未登录或者登录失败");
+
         String json = new Gson().toJson(res);
         System.out.println(json);
         response.getWriter().write(json);
